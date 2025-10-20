@@ -241,6 +241,7 @@ function collectChartData() {
     const data = [];
     const colors = [];
     const offsets = [];
+    const emojis = [];
     let colorIndex = 0;
 
     // Process major sports
@@ -279,6 +280,7 @@ function collectChartData() {
                         labels.push(`${sportEmojis[sport]} ${team.name}`);
                         data.push(teamShare);
                         colors.push(shades[shadeIndex]);
+                        emojis.push(sportEmojis[sport]);
                         // Team segments are exploded more
                         offsets.push(20);
                         shadeIndex++;
@@ -291,6 +293,7 @@ function collectChartData() {
                     labels.push(`${sportEmojis[sport]} Other ${sportName}`);
                     data.push(otherShare);
                     colors.push(shades[shadeIndex]);
+                    emojis.push(sportEmojis[sport]);
                     // Parent sport segment has less offset
                     offsets.push(5);
                 }
@@ -299,6 +302,7 @@ function collectChartData() {
                 labels.push(`${sportEmojis[sport]} ${sportName}`);
                 data.push(sportPercent);
                 colors.push(baseColor);
+                emojis.push(sportEmojis[sport]);
                 offsets.push(5);
             }
 
@@ -337,6 +341,7 @@ function collectChartData() {
                         labels.push(`${sportName}: ${team.name}`);
                         data.push(teamShare);
                         colors.push(shades[shadeIndex]);
+                        emojis.push(null); // No emoji for custom sports
                         offsets.push(20);
                         shadeIndex++;
                     }
@@ -348,12 +353,14 @@ function collectChartData() {
                     labels.push(`Other ${sportName}`);
                     data.push(otherShare);
                     colors.push(shades[shadeIndex]);
+                    emojis.push(null);
                     offsets.push(5);
                 }
             } else {
                 labels.push(sportName);
                 data.push(sportPercent);
                 colors.push(baseColor);
+                emojis.push(null); // No emoji for custom sports
                 offsets.push(5);
             }
 
@@ -361,7 +368,7 @@ function collectChartData() {
         }
     });
 
-    return { labels, data, colors, offsets };
+    return { labels, data, colors, offsets, emojis };
 }
 
 function collectTeamsForSport(sport) {
@@ -388,6 +395,48 @@ function renderChart(chartData) {
     if (chart) {
         chart.destroy();
     }
+
+    // Create emoji overlay plugin
+    const emojiPlugin = {
+        id: 'emojiOverlay',
+        afterDatasetsDraw(chart) {
+            const { ctx, chartArea } = chart;
+            const meta = chart.getDatasetMeta(0);
+            const centerX = (chartArea.left + chartArea.right) / 2;
+            const centerY = (chartArea.top + chartArea.bottom) / 2;
+
+            ctx.save();
+            ctx.font = 'bold 32px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+
+            meta.data.forEach((arc, index) => {
+                const emoji = chartData.emojis[index];
+                if (!emoji) return;
+
+                // Calculate the angle for this segment
+                const startAngle = arc.startAngle;
+                const endAngle = arc.endAngle;
+                const midAngle = (startAngle + endAngle) / 2;
+
+                // Calculate radius (70% of outer radius to position emoji in middle of segment)
+                const radius = (arc.outerRadius + arc.innerRadius) / 2;
+
+                // Adjust for offset (exploded segments)
+                const offset = chartData.offsets[index] || 0;
+                const adjustedRadius = radius + (offset * 0.3);
+
+                // Convert to cartesian coordinates
+                const x = centerX + adjustedRadius * Math.cos(midAngle);
+                const y = centerY + adjustedRadius * Math.sin(midAngle);
+
+                // Draw emoji
+                ctx.fillText(emoji, x, y);
+            });
+
+            ctx.restore();
+        }
+    };
 
     // Create new chart
     chart = new Chart(ctx, {
@@ -441,9 +490,11 @@ function renderChart(chartData) {
                     bodyFont: {
                         size: 14
                     }
-                }
+                },
+                emojiOverlay: {}
             }
-        }
+        },
+        plugins: [emojiPlugin]
     });
 
     // Show chart action buttons
