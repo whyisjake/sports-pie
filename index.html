@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sports Fandom Pie Chart</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Sports Fandom Pie Chart</h1>
+        <p class="subtitle">Calculate and visualize your sports fandom breakdown</p>
+
+        <div class="main-content">
+            <div class="input-section">
+                <h2>Major Sports</h2>
+                <div class="sport-group" id="football-group">
+                    <div class="sport-header">
+                        <label>🏈 Football</label>
+                        <input type="number" id="football-percent" class="sport-percent" min="0" max="100" value="0"
+                            placeholder="0">
+                        <span>%</span>
+                    </div>
+                    <div class="team-inputs" id="football-teams">
+                        <button class="add-team-btn" data-sport="football">+ Add Team</button>
+                    </div>
+                </div>
+
+                <div class="sport-group" id="basketball-group">
+                    <div class="sport-header">
+                        <label>🏀 Basketball</label>
+                        <input type="number" id="basketball-percent" class="sport-percent" min="0" max="100" value="0"
+                            placeholder="0">
+                        <span>%</span>
+                    </div>
+                    <div class="team-inputs" id="basketball-teams">
+                        <button class="add-team-btn" data-sport="basketball">+ Add Team</button>
+                    </div>
+                </div>
+
+                <div class="sport-group" id="hockey-group">
+                    <div class="sport-header">
+                        <label>🏒 Hockey</label>
+                        <input type="number" id="hockey-percent" class="sport-percent" min="0" max="100" value="0"
+                            placeholder="0">
+                        <span>%</span>
+                    </div>
+                    <div class="team-inputs" id="hockey-teams">
+                        <button class="add-team-btn" data-sport="hockey">+ Add Team</button>
+                    </div>
+                </div>
+
+                <div class="sport-group" id="baseball-group">
+                    <div class="sport-header">
+                        <label>⚾ Baseball</label>
+                        <input type="number" id="baseball-percent" class="sport-percent" min="0" max="100" value="0"
+                            placeholder="0">
+                        <span>%</span>
+                    </div>
+                    <div class="team-inputs" id="baseball-teams">
+                        <button class="add-team-btn" data-sport="baseball">+ Add Team</button>
+                    </div>
+                </div>
+
+                <h2>Other Sports</h2>
+                <div id="other-sports-container">
+                    <!-- Dynamically added sports will go here -->
+                </div>
+                <button id="add-sport-btn" class="primary-btn">+ Add Another Sport</button>
+
+                <div class="action-buttons">
+                    <button id="generate-btn" class="primary-btn generate-btn">Generate Chart</button>
+                    <button id="reset-btn" class="secondary-btn">Reset</button>
+                </div>
+
+                <div id="total-display" class="total-display">
+                    Total: <span id="total-percent">0</span>%
+                    <span id="total-warning" class="warning"></span>
+                </div>
+            </div>
+
+            <div class="chart-section">
+                <canvas id="fandomChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
