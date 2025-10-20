@@ -103,8 +103,12 @@ function addTeamInput(sport) {
     teamDiv.className = 'team-input-group';
     teamDiv.dataset.teamId = teamCounter;
 
+    // Determine the datalist to use for autocomplete
+    const datalistId = `${sport}-teams-list`;
+    const datalistAttr = document.getElementById(datalistId) ? `list="${datalistId}"` : '';
+
     teamDiv.innerHTML = `
-        <input type="text" class="team-name" placeholder="Team name" data-sport="${sport}">
+        <input type="text" class="team-name" placeholder="Team name" data-sport="${sport}" ${datalistAttr} autocomplete="off">
         <input type="number" class="team-percent" min="0" max="100" value="0" placeholder="0" data-sport="${sport}">
         <span>%</span>
         <button class="remove-team-btn" data-team-id="${teamCounter}">×</button>
