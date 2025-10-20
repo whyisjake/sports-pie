@@ -67,6 +67,7 @@ function generateColorShades(baseColor, count) {
 // Initialize the app
 document.addEventListener('DOMContentLoaded', function() {
     setupEventListeners();
+    loadFromURL();
     updateTotal();
 });
 
@@ -87,6 +88,12 @@ function setupEventListeners() {
 
     // Reset button
     document.getElementById('reset-btn').addEventListener('click', resetAll);
+
+    // Share button
+    document.getElementById('share-btn').addEventListener('click', shareChart);
+
+    // Download button
+    document.getElementById('download-btn').addEventListener('click', downloadChartImage);
 
     // Listen to all sport percentage changes
     document.querySelectorAll('.sport-percent').forEach(input => {
@@ -438,6 +445,9 @@ function renderChart(chartData) {
             }
         }
     });
+
+    // Show chart action buttons
+    document.getElementById('chart-actions').style.display = 'flex';
 }
 
 function resetAll() {
@@ -466,4 +476,171 @@ function resetAll() {
         chart.destroy();
         chart = null;
     }
+}
+
+// ===== URL Sharing Functions =====
+
+function encodeStateToURL() {
+    const state = {
+        sports: {},
+        other: []
+    };
+
+    // Encode major sports
+    const majorSports = ['football', 'basketball', 'hockey', 'baseball'];
+    majorSports.forEach(sport => {
+        const percent = parseFloat(document.getElementById(`${sport}-percent`).value) || 0;
+        if (percent > 0) {
+            const teams = collectTeamsForSport(sport);
+            state.sports[sport] = {
+                percent: percent,
+                teams: teams
+            };
+        }
+    });
+
+    // Encode other sports
+    const otherSports = document.querySelectorAll('.other-sport');
+    otherSports.forEach(sportDiv => {
+        const sportNameInput = sportDiv.querySelector('.other-sport-name');
+        const sportPercentInput = sportDiv.querySelector('.other-sport-percent');
+        const sportName = sportNameInput.value.trim();
+        const sportPercent = parseFloat(sportPercentInput.value) || 0;
+        const sportId = sportPercentInput.dataset.sportId;
+
+        if (sportPercent > 0 && sportName) {
+            const teams = collectTeamsForSport(sportId);
+            state.other.push({
+                name: sportName,
+                percent: sportPercent,
+                teams: teams
+            });
+        }
+    });
+
+    // Convert to base64 to make URL shorter and handle special characters
+    const jsonString = JSON.stringify(state);
+    const encoded = btoa(encodeURIComponent(jsonString));
+
+    return `${window.location.origin}${window.location.pathname}?data=${encoded}`;
+}
+
+function loadFromURL() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const encodedData = urlParams.get('data');
+
+    if (!encodedData) return;
+
+    try {
+        const jsonString = decodeURIComponent(atob(encodedData));
+        const state = JSON.parse(jsonString);
+
+        // Load major sports
+        const majorSports = ['football', 'basketball', 'hockey', 'baseball'];
+        majorSports.forEach(sport => {
+            if (state.sports[sport]) {
+                const sportData = state.sports[sport];
+                document.getElementById(`${sport}-percent`).value = sportData.percent;
+
+                // Add teams
+                sportData.teams.forEach(team => {
+                    addTeamInput(sport);
+                    const teamInputs = document.querySelectorAll(`input.team-name[data-sport="${sport}"]`);
+                    const lastTeamInput = teamInputs[teamInputs.length - 1];
+                    lastTeamInput.value = team.name;
+                    lastTeamInput.nextElementSibling.value = team.percent;
+                });
+            }
+        });
+
+        // Load other sports
+        if (state.other && state.other.length > 0) {
+            state.other.forEach(sportData => {
+                addOtherSport();
+                const otherSports = document.querySelectorAll('.other-sport');
+                const lastSport = otherSports[otherSports.length - 1];
+
+                lastSport.querySelector('.other-sport-name').value = sportData.name;
+                lastSport.querySelector('.other-sport-percent').value = sportData.percent;
+
+                const sportId = lastSport.querySelector('.other-sport-percent').dataset.sportId;
+
+                // Add teams
+                sportData.teams.forEach(team => {
+                    addTeamInput(sportId);
+                    const teamInputs = document.querySelectorAll(`input.team-name[data-sport="${sportId}"]`);
+                    const lastTeamInput = teamInputs[teamInputs.length - 1];
+                    lastTeamInput.value = team.name;
+                    lastTeamInput.nextElementSibling.value = team.percent;
+                });
+            });
+        }
+
+        // Auto-generate chart if data was loaded
+        setTimeout(() => {
+            generateChart();
+        }, 100);
+
+    } catch (e) {
+        console.error('Failed to load data from URL:', e);
+    }
+}
+
+function shareChart() {
+    const url = encodeStateToURL();
+
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(url).then(() => {
+            showNotification('Link copied to clipboard!');
+        }).catch(() => {
+            promptCopyURL(url);
+        });
+    } else {
+        promptCopyURL(url);
+    }
+}
+
+function promptCopyURL(url) {
+    const input = document.createElement('input');
+    input.value = url;
+    document.body.appendChild(input);
+    input.select();
+    try {
+        document.execCommand('copy');
+        showNotification('Link copied to clipboard!');
+    } catch (e) {
+        prompt('Copy this link to share:', url);
+    }
+    document.body.removeChild(input);
+}
+
+function downloadChartImage() {
+    if (!chart) {
+        alert('Please generate a chart first!');
+        return;
+    }
+
+    const url = chart.toBase64Image();
+    const link = document.createElement('a');
+    link.download = 'sports-fandom-chart.png';
+    link.href = url;
+    link.click();
+}
+
+function showNotification(message) {
+    const notification = document.createElement('div');
+    notification.className = 'notification';
+    notification.textContent = message;
+    document.body.appendChild(notification);
+
+    setTimeout(() => {
+        notification.classList.add('show');
+    }, 10);
+
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => {
+            document.body.removeChild(notification);
+        }, 300);
+    }, 2000);
 }
