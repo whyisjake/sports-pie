@@ -4,9 +4,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sports Fandom Pie Chart</title>
+    <title>Sports Fandom Pie Chart - Visualize Your Sports Love</title>
+    <meta name="description"
+        content="Create and share interactive pie charts showing your sports fandom breakdown across NFL, NBA, NHL, MLB, and more. Break down your favorite teams and visualize your sports passion.">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://sportspie.site/">
+    <meta property="og:title" content="Sports Fandom Pie Chart - Visualize Your Sports Love">
+    <meta property="og:description"
+        content="Create and share interactive pie charts showing your sports fandom breakdown across NFL, NBA, NHL, MLB, and more. Break down your favorite teams and visualize your sports passion.">
+    <meta property="og:image" content="https://sportspie.site/assets/images/sports-fandom-chart.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://sportspie.site/">
+    <meta property="twitter:title" content="Sports Fandom Pie Chart - Visualize Your Sports Love">
+    <meta property="twitter:description"
+        content="Create and share interactive pie charts showing your sports fandom breakdown across NFL, NBA, NHL, MLB, and more. Break down your favorite teams and visualize your sports passion.">
+    <meta property="twitter:image" content="https://sportspie.site/assets/images/sports-fandom-chart.png">
+    <meta property="twitter:creator" content="@whyisjake">
+    <meta property="twitter:site" content="@whyisjake">
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 
 <body>
@@ -86,7 +109,8 @@
                 <canvas id="fandomChart"></canvas>
                 <div class="chart-actions" id="chart-actions" style="display: none;">
                     <button id="share-btn" class="chart-action-btn">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
                             <circle cx="18" cy="5" r="3"></circle>
                             <circle cx="6" cy="12" r="3"></circle>
                             <circle cx="18" cy="19" r="3"></circle>
@@ -96,7 +120,8 @@
                         Share Link
                     </button>
                     <button id="download-btn" class="chart-action-btn">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
                             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                             <polyline points="7 10 12 15 17 10"></polyline>
                             <line x1="12" y1="15" x2="12" y2="3"></line>
@@ -109,7 +134,9 @@
     </div>
 
     <footer class="footer">
-        <p>Built by <a href="https://jakespurlock.com" target="_blank" rel="noopener">Jake Spurlock</a> · <a href="https://twitter.com/whyisjake" target="_blank" rel="noopener">@whyisjake</a> · <a href="https://github.com/whyisjake/sports-pie" target="_blank" rel="noopener">Credits</a></p>
+        <p>Built by <a href="https://jakespurlock.com" target="_blank" rel="noopener">Jake Spurlock</a> · <a
+                href="https://twitter.com/whyisjake" target="_blank" rel="noopener">@whyisjake</a> · <a
+                href="https://github.com/whyisjake/sports-pie" target="_blank" rel="noopener">Credits</a></p>
     </footer>
 
     <!-- Datalists for team autocomplete -->
@@ -249,7 +276,7 @@
         <option value="Washington Nationals">
     </datalist>
 
-    <script src="script.js"></script>
+    <script src="assets/js/script.js"></script>
 </body>
 
 </html>
