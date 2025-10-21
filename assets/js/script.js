@@ -3,6 +3,64 @@ let chart = null;
 let teamCounter = 0;
 let otherSportCounter = 0;
 
+// Team ID mappings for compact URL encoding
+const TEAM_IDS = {
+    // NFL
+    'Arizona Cardinals': 'ARI', 'Atlanta Falcons': 'ATL', 'Baltimore Ravens': 'BAL',
+    'Buffalo Bills': 'BUF', 'Carolina Panthers': 'CAR', 'Chicago Bears': 'CHI',
+    'Cincinnati Bengals': 'CIN', 'Cleveland Browns': 'CLE', 'Dallas Cowboys': 'DAL',
+    'Denver Broncos': 'DEN', 'Detroit Lions': 'DET', 'Green Bay Packers': 'GB',
+    'Houston Texans': 'HOU', 'Indianapolis Colts': 'IND', 'Jacksonville Jaguars': 'JAX',
+    'Kansas City Chiefs': 'KC', 'Las Vegas Raiders': 'LV', 'Los Angeles Chargers': 'LAC',
+    'Los Angeles Rams': 'LAR', 'Miami Dolphins': 'MIA', 'Minnesota Vikings': 'MIN',
+    'New England Patriots': 'NE', 'New Orleans Saints': 'NO', 'New York Giants': 'NYG',
+    'New York Jets': 'NYJ', 'Philadelphia Eagles': 'PHI', 'Pittsburgh Steelers': 'PIT',
+    'San Francisco 49ers': 'SF', 'Seattle Seahawks': 'SEA', 'Tampa Bay Buccaneers': 'TB',
+    'Tennessee Titans': 'TEN', 'Washington Commanders': 'WAS',
+
+    // NBA
+    'Atlanta Hawks': 'HAWK', 'Boston Celtics': 'BOS', 'Brooklyn Nets': 'BKN',
+    'Charlotte Hornets': 'CHA', 'Chicago Bulls': 'BULL', 'Cleveland Cavaliers': 'CAVS',
+    'Dallas Mavericks': 'MAVS', 'Denver Nuggets': 'NUGS', 'Detroit Pistons': 'PIST',
+    'Golden State Warriors': 'GSW', 'Houston Rockets': 'ROCK', 'Indiana Pacers': 'PACE',
+    'LA Clippers': 'CLIP', 'Los Angeles Lakers': 'LAL', 'Memphis Grizzlies': 'MEM',
+    'Miami Heat': 'HEAT', 'Milwaukee Bucks': 'MIL', 'Minnesota Timberwolves': 'TIMB',
+    'New Orleans Pelicans': 'PELS', 'New York Knicks': 'NICK', 'Oklahoma City Thunder': 'OKC',
+    'Orlando Magic': 'ORL', 'Philadelphia 76ers': '76ER', 'Phoenix Suns': 'PHX',
+    'Portland Trail Blazers': 'POR', 'Sacramento Kings': 'SAC', 'San Antonio Spurs': 'SAS',
+    'Toronto Raptors': 'TOR', 'Utah Jazz': 'UTAH', 'Washington Wizards': 'WIZ',
+
+    // NHL
+    'Anaheim Ducks': 'ANA', 'Arizona Coyotes': 'AZ', 'Boston Bruins': 'BRU',
+    'Buffalo Sabres': 'SABR', 'Calgary Flames': 'CGY', 'Carolina Hurricanes': 'CANE',
+    'Chicago Blackhawks': 'HAWK', 'Colorado Avalanche': 'COL', 'Columbus Blue Jackets': 'CBJ',
+    'Dallas Stars': 'STAR', 'Detroit Red Wings': 'DRW', 'Edmonton Oilers': 'EDM',
+    'Florida Panthers': 'FLA', 'Los Angeles Kings': 'LAK', 'Minnesota Wild': 'WILD',
+    'Montreal Canadiens': 'MTL', 'Nashville Predators': 'NSH', 'New Jersey Devils': 'NJD',
+    'New York Islanders': 'NYI', 'New York Rangers': 'NYR', 'Ottawa Senators': 'OTT',
+    'Philadelphia Flyers': 'FLY', 'Pittsburgh Penguins': 'PENG', 'San Jose Sharks': 'SJS',
+    'Seattle Kraken': 'KRAK', 'St. Louis Blues': 'STL', 'Tampa Bay Lightning': 'TBL',
+    'Toronto Maple Leafs': 'LEAF', 'Vancouver Canucks': 'VAN', 'Vegas Golden Knights': 'VGK',
+    'Washington Capitals': 'CAPS', 'Winnipeg Jets': 'JETS',
+
+    // MLB
+    'Arizona Diamondbacks': 'DBACK', 'Atlanta Braves': 'BRAV', 'Baltimore Orioles': 'ORI',
+    'Boston Red Sox': 'RSX', 'Chicago Cubs': 'CUBS', 'Chicago White Sox': 'WSX',
+    'Cincinnati Reds': 'REDS', 'Cleveland Guardians': 'GUAR', 'Colorado Rockies': 'ROCK',
+    'Detroit Tigers': 'TIG', 'Houston Astros': 'ASTR', 'Kansas City Royals': 'ROY',
+    'Los Angeles Angels': 'ANG', 'Los Angeles Dodgers': 'DOD', 'Miami Marlins': 'MAR',
+    'Milwaukee Brewers': 'BREW', 'Minnesota Twins': 'TWIN', 'New York Mets': 'METS',
+    'New York Yankees': 'YANK', 'Oakland Athletics': 'OAK', 'Philadelphia Phillies': 'PHIL',
+    'Pittsburgh Pirates': 'PIR', 'San Diego Padres': 'PAD', 'San Francisco Giants': 'GIAN',
+    'Seattle Mariners': 'MAR', 'St. Louis Cardinals': 'CARD', 'Tampa Bay Rays': 'RAYS',
+    'Texas Rangers': 'RANG', 'Toronto Blue Jays': 'JAYS', 'Washington Nationals': 'NAT'
+};
+
+// Reverse mapping for decoding
+const ID_TO_TEAM = Object.fromEntries(
+    Object.entries(TEAM_IDS).map(([name, id]) => [id, name])
+);
+
 // Color palette for the chart
 const colorPalette = [
     '#1E3A8A', // Navy Blue
@@ -532,10 +590,10 @@ function resetAll() {
 // ===== URL Sharing Functions =====
 
 function encodeStateToURL() {
-    const state = {
-        sports: {},
-        other: []
-    };
+    const parts = [];
+
+    // Sport code mapping
+    const sportCodes = { 'football': 'f', 'basketball': 'b', 'hockey': 'h', 'baseball': 'a' };
 
     // Encode major sports
     const majorSports = ['football', 'basketball', 'hockey', 'baseball'];
@@ -543,14 +601,21 @@ function encodeStateToURL() {
         const percent = parseFloat(document.getElementById(`${sport}-percent`).value) || 0;
         if (percent > 0) {
             const teams = collectTeamsForSport(sport);
-            state.sports[sport] = {
-                percent: percent,
-                teams: teams
-            };
+            const sportCode = sportCodes[sport];
+            let sportPart = `${sportCode}:${percent}`;
+
+            if (teams.length > 0) {
+                const teamParts = teams.map(team => {
+                    const teamId = TEAM_IDS[team.name] || `~${encodeURIComponent(team.name)}`;
+                    return `${teamId}:${team.percent}`;
+                });
+                sportPart += ':' + teamParts.join(',');
+            }
+            parts.push(sportPart);
         }
     });
 
-    // Encode other sports
+    // Encode other sports (custom sports)
     const otherSports = document.querySelectorAll('.other-sport');
     otherSports.forEach(sportDiv => {
         const sportNameInput = sportDiv.querySelector('.other-sport-name');
@@ -561,79 +626,157 @@ function encodeStateToURL() {
 
         if (sportPercent > 0 && sportName) {
             const teams = collectTeamsForSport(sportId);
-            state.other.push({
-                name: sportName,
-                percent: sportPercent,
-                teams: teams
-            });
+            let sportPart = `c:${encodeURIComponent(sportName)}:${sportPercent}`;
+
+            if (teams.length > 0) {
+                const teamParts = teams.map(team => {
+                    const teamId = TEAM_IDS[team.name] || `~${encodeURIComponent(team.name)}`;
+                    return `${teamId}:${team.percent}`;
+                });
+                sportPart += ':' + teamParts.join(',');
+            }
+            parts.push(sportPart);
         }
     });
 
-    // Convert to base64 to make URL shorter and handle special characters
-    const jsonString = JSON.stringify(state);
-    const encoded = btoa(encodeURIComponent(jsonString));
-
-    return `${window.location.origin}${window.location.pathname}?data=${encoded}`;
+    const encoded = parts.join('|');
+    return `${window.location.origin}${window.location.pathname}?d=${encoded}`;
 }
 
 function loadFromURL() {
     const urlParams = new URLSearchParams(window.location.search);
-    const encodedData = urlParams.get('data');
+    const compactData = urlParams.get('d');
+    const legacyData = urlParams.get('data');
 
-    if (!encodedData) return;
+    // Try new compact format first
+    if (compactData) {
+        try {
+            decodeCompactFormat(compactData);
+            setTimeout(() => generateChart(), 100);
+            return;
+        } catch (e) {
+            console.error('Failed to load compact data:', e);
+        }
+    }
 
-    try {
-        const jsonString = decodeURIComponent(atob(encodedData));
-        const state = JSON.parse(jsonString);
+    // Fallback to legacy format for backwards compatibility
+    if (legacyData) {
+        try {
+            decodeLegacyFormat(legacyData);
+            setTimeout(() => generateChart(), 100);
+        } catch (e) {
+            console.error('Failed to load legacy data:', e);
+        }
+    }
+}
 
-        // Load major sports
-        const majorSports = ['football', 'basketball', 'hockey', 'baseball'];
-        majorSports.forEach(sport => {
-            if (state.sports[sport]) {
-                const sportData = state.sports[sport];
-                document.getElementById(`${sport}-percent`).value = sportData.percent;
+function decodeCompactFormat(encoded) {
+    const sportCodes = { 'f': 'football', 'b': 'basketball', 'h': 'hockey', 'a': 'baseball' };
+    const parts = encoded.split('|');
 
-                // Add teams
-                sportData.teams.forEach(team => {
-                    addTeamInput(sport);
-                    const teamInputs = document.querySelectorAll(`input.team-name[data-sport="${sport}"]`);
-                    const lastTeamInput = teamInputs[teamInputs.length - 1];
-                    lastTeamInput.value = team.name;
-                    lastTeamInput.nextElementSibling.value = team.percent;
-                });
+    parts.forEach(part => {
+        const segments = part.split(':');
+        const sportCode = segments[0];
+
+        if (sportCode === 'c') {
+            // Custom sport: c:SportName:percent[:team:pct,team:pct...]
+            const sportName = decodeURIComponent(segments[1]);
+            const sportPercent = parseFloat(segments[2]);
+
+            addOtherSport();
+            const otherSports = document.querySelectorAll('.other-sport');
+            const lastSport = otherSports[otherSports.length - 1];
+            lastSport.querySelector('.other-sport-name').value = sportName;
+            lastSport.querySelector('.other-sport-percent').value = sportPercent;
+
+            const sportId = lastSport.querySelector('.other-sport-percent').dataset.sportId;
+
+            // Decode teams if present
+            if (segments.length > 3) {
+                const teamsStr = segments.slice(3).join(':');
+                decodeTeams(teamsStr, sportId);
             }
-        });
+        } else if (sportCodes[sportCode]) {
+            // Major sport: f:percent[:team:pct,team:pct...]
+            const sport = sportCodes[sportCode];
+            const sportPercent = parseFloat(segments[1]);
 
-        // Load other sports
-        if (state.other && state.other.length > 0) {
-            state.other.forEach(sportData => {
-                addOtherSport();
-                const otherSports = document.querySelectorAll('.other-sport');
-                const lastSport = otherSports[otherSports.length - 1];
+            document.getElementById(`${sport}-percent`).value = sportPercent;
 
-                lastSport.querySelector('.other-sport-name').value = sportData.name;
-                lastSport.querySelector('.other-sport-percent').value = sportData.percent;
+            // Decode teams if present
+            if (segments.length > 2) {
+                const teamsStr = segments.slice(2).join(':');
+                decodeTeams(teamsStr, sport);
+            }
+        }
+    });
+}
 
-                const sportId = lastSport.querySelector('.other-sport-percent').dataset.sportId;
+function decodeTeams(teamsStr, sport) {
+    const teamPairs = teamsStr.split(',');
+    teamPairs.forEach(pair => {
+        const [teamId, percent] = pair.split(':');
+        let teamName;
 
-                // Add teams
-                sportData.teams.forEach(team => {
-                    addTeamInput(sportId);
-                    const teamInputs = document.querySelectorAll(`input.team-name[data-sport="${sportId}"]`);
-                    const lastTeamInput = teamInputs[teamInputs.length - 1];
-                    lastTeamInput.value = team.name;
-                    lastTeamInput.nextElementSibling.value = team.percent;
-                });
-            });
+        if (teamId.startsWith('~')) {
+            // Custom team name
+            teamName = decodeURIComponent(teamId.substring(1));
+        } else {
+            // Known team ID
+            teamName = ID_TO_TEAM[teamId] || teamId;
         }
 
-        // Auto-generate chart if data was loaded
-        setTimeout(() => {
-            generateChart();
-        }, 100);
+        addTeamInput(sport);
+        const teamInputs = document.querySelectorAll(`input.team-name[data-sport="${sport}"]`);
+        const lastTeamInput = teamInputs[teamInputs.length - 1];
+        lastTeamInput.value = teamName;
+        lastTeamInput.nextElementSibling.value = parseFloat(percent);
+    });
+}
 
-    } catch (e) {
-        console.error('Failed to load data from URL:', e);
+function decodeLegacyFormat(encodedData) {
+    const jsonString = decodeURIComponent(atob(encodedData));
+    const state = JSON.parse(jsonString);
+
+    // Load major sports
+    const majorSports = ['football', 'basketball', 'hockey', 'baseball'];
+    majorSports.forEach(sport => {
+        if (state.sports[sport]) {
+            const sportData = state.sports[sport];
+            document.getElementById(`${sport}-percent`).value = sportData.percent;
+
+            // Add teams
+            sportData.teams.forEach(team => {
+                addTeamInput(sport);
+                const teamInputs = document.querySelectorAll(`input.team-name[data-sport="${sport}"]`);
+                const lastTeamInput = teamInputs[teamInputs.length - 1];
+                lastTeamInput.value = team.name;
+                lastTeamInput.nextElementSibling.value = team.percent;
+            });
+        }
+    });
+
+    // Load other sports
+    if (state.other && state.other.length > 0) {
+        state.other.forEach(sportData => {
+            addOtherSport();
+            const otherSports = document.querySelectorAll('.other-sport');
+            const lastSport = otherSports[otherSports.length - 1];
+
+            lastSport.querySelector('.other-sport-name').value = sportData.name;
+            lastSport.querySelector('.other-sport-percent').value = sportData.percent;
+
+            const sportId = lastSport.querySelector('.other-sport-percent').dataset.sportId;
+
+            // Add teams
+            sportData.teams.forEach(team => {
+                addTeamInput(sportId);
+                const teamInputs = document.querySelectorAll(`input.team-name[data-sport="${sportId}"]`);
+                const lastTeamInput = teamInputs[teamInputs.length - 1];
+                lastTeamInput.value = team.name;
+                lastTeamInput.nextElementSibling.value = team.percent;
+            });
+        });
     }
 }
 

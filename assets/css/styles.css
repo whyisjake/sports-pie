@@ -57,8 +57,6 @@ h2 {
 }
 
 .input-section {
-    max-height: 80vh;
-    overflow-y: auto;
     padding-right: 10px;
 }
 
