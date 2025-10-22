@@ -54,10 +54,76 @@ h2 {
     .main-content {
         grid-template-columns: 1fr;
     }
+
+    .container {
+        padding: 20px;
+    }
+
+    body {
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 1.8em;
+    }
+
+    h2 {
+        font-size: 1.3em;
+    }
+
+    .input-section {
+        padding-right: 0;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+
+    .action-buttons button {
+        width: 100%;
+    }
+
+    .team-input-group {
+        gap: 5px;
+        padding: 8px;
+        flex-wrap: nowrap;
+    }
+
+    .team-input-group input[type="text"] {
+        min-width: 0;
+        flex: 1 1 auto;
+        padding: 6px 8px;
+        font-size: 0.9em;
+    }
+
+    .team-input-group input[type="number"] {
+        width: 60px;
+        padding: 6px 8px;
+        font-size: 0.9em;
+    }
+
+    .team-input-group span {
+        font-size: 0.9em;
+    }
+
+    .remove-team-btn,
+    .remove-sport-btn {
+        padding: 4px 8px;
+        font-size: 1.1em;
+    }
+
+    .sport-header input[type="number"] {
+        width: 70px;
+    }
+
+    .team-inputs {
+        /* padding-left: 10px; */
+    }
 }
 
 .input-section {
     padding-right: 10px;
+    overflow-x: hidden;
 }
 
 .input-section::-webkit-scrollbar {
@@ -135,8 +201,8 @@ h2 {
 
 .team-inputs {
     margin-top: 15px;
-    padding-left: 20px;
-    border-left: 3px solid #d1d5db;
+    /* padding-left: 20px; */
+    /* border-left: 3px solid #d1d5db; */
 }
 
 .team-input-group {
