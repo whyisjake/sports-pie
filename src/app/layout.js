@@ -30,6 +30,18 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
+        <link
+          rel="alternate"
+          type="application/json+oembed"
+          href="https://sportspie.site/api/oembed?url=https://sportspie.site&format=json"
+          title="Sports Pie oEmbed"
+        />
+        <link
+          rel="alternate"
+          type="text/xml+oembed"
+          href="https://sportspie.site/api/oembed?url=https://sportspie.site&format=xml"
+          title="Sports Pie oEmbed"
+        />
         <script async src="/_vercel/insights/script.js"></script>
       </head>
       <body>{children}</body>
