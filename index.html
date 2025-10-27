@@ -30,6 +30,31 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
     <link rel="stylesheet" href="assets/css/styles.css">
+
+    <!-- Dynamic OG Image Script -->
+    <script>
+        (function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const dataParam = urlParams.get('d');
+
+            if (dataParam) {
+                const ogImageUrl = `https://sportspie.site/api/og?d=${encodeURIComponent(dataParam)}`;
+                const currentUrl = window.location.href;
+
+                // Update OG meta tags
+                document.querySelector('meta[property="og:image"]').setAttribute('content', ogImageUrl);
+                document.querySelector('meta[property="og:url"]').setAttribute('content', currentUrl);
+                document.querySelector('meta[property="og:title"]').setAttribute('content', 'My Sports Fandom Breakdown');
+                document.querySelector('meta[property="og:description"]').setAttribute('content', 'Check out my sports fandom breakdown!');
+
+                // Update Twitter meta tags
+                document.querySelector('meta[property="twitter:image"]').setAttribute('content', ogImageUrl);
+                document.querySelector('meta[property="twitter:url"]').setAttribute('content', currentUrl);
+                document.querySelector('meta[property="twitter:title"]').setAttribute('content', 'My Sports Fandom Breakdown');
+                document.querySelector('meta[property="twitter:description"]').setAttribute('content', 'Check out my sports fandom breakdown!');
+            }
+        })();
+    </script>
 </head>
 
 <body>
@@ -43,7 +68,7 @@
                 <div class="sport-group" id="football-group">
                     <div class="sport-header">
                         <label>🏈 Football</label>
-                        <input type="number" id="football-percent" class="sport-percent" min="0" max="100" value="0"
+                        <input type="number" id="football-percent" class="sport-percent" min="0" max="100"
                             placeholder="0">
                         <span>%</span>
                     </div>
@@ -55,7 +80,7 @@
                 <div class="sport-group" id="basketball-group">
                     <div class="sport-header">
                         <label>🏀 Basketball</label>
-                        <input type="number" id="basketball-percent" class="sport-percent" min="0" max="100" value="0"
+                        <input type="number" id="basketball-percent" class="sport-percent" min="0" max="100"
                             placeholder="0">
                         <span>%</span>
                     </div>
@@ -67,7 +92,7 @@
                 <div class="sport-group" id="hockey-group">
                     <div class="sport-header">
                         <label>🏒 Hockey</label>
-                        <input type="number" id="hockey-percent" class="sport-percent" min="0" max="100" value="0"
+                        <input type="number" id="hockey-percent" class="sport-percent" min="0" max="100"
                             placeholder="0">
                         <span>%</span>
                     </div>
@@ -79,7 +104,7 @@
                 <div class="sport-group" id="baseball-group">
                     <div class="sport-header">
                         <label>⚾ Baseball</label>
-                        <input type="number" id="baseball-percent" class="sport-percent" min="0" max="100" value="0"
+                        <input type="number" id="baseball-percent" class="sport-percent" min="0" max="100"
                             placeholder="0">
                         <span>%</span>
                     </div>
@@ -136,8 +161,9 @@
     <footer class="footer">
         <p>Built by <a href="https://jakespurlock.com" target="_blank" rel="noopener">Jake Spurlock</a> · <a
                 href="https://twitter.com/whyisjake" target="_blank" rel="noopener">@whyisjake</a></p>
-        <p>Inspired by <a href="https://www.tiktok.com/@__sportsball/video/7563289447702252855" target="_blank" rel="noopener">@__sportsball</a> · <a
-                href="https://github.com/whyisjake/sports-pie" target="_blank" rel="noopener">Credits</a></p>
+        <p>Inspired by <a href="https://www.tiktok.com/@__sportsball/video/7563289447702252855" target="_blank"
+                rel="noopener">@__sportsball</a> · <a href="https://github.com/whyisjake/sports-pie" target="_blank"
+                rel="noopener">Credits</a></p>
     </footer>
 
     <!-- Datalists for team autocomplete -->

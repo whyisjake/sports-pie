@@ -1,0 +1,11 @@
+{
+  "name": "sports-pie",
+  "version": "1.0.0",
+  "description": "Sports Fandom Pie Chart",
+  "scripts": {
+    "dev": "vercel dev"
+  },
+  "dependencies": {
+    "@vercel/og": "^0.6.2"
+  }
+}
