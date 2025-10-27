@@ -1,0 +1,6 @@
+old_vanilla_version
+assets
+.claude
+.DS_Store
+node_modules
+.git
