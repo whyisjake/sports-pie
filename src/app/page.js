@@ -6,6 +6,9 @@ export async function generateMetadata({ searchParams }) {
   const dataParam = params.d
 
   if (dataParam) {
+    const pageUrl = `https://sportspie.site/?d=${dataParam}`
+    const encodedUrl = encodeURIComponent(pageUrl)
+
     return {
       title: 'My Sports Fandom Breakdown',
       description: 'Check out my sports fandom breakdown!',
@@ -23,6 +26,12 @@ export async function generateMetadata({ searchParams }) {
         title: 'My Sports Fandom Breakdown',
         description: 'Check out my sports fandom breakdown!',
         images: [`/api/og?d=${encodeURIComponent(dataParam)}`],
+      },
+      alternates: {
+        types: {
+          'application/json+oembed': `https://sportspie.site/api/oembed?url=${encodedUrl}&format=json`,
+          'text/xml+oembed': `https://sportspie.site/api/oembed?url=${encodedUrl}&format=xml`,
+        },
       },
     }
   }
