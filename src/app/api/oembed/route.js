@@ -13,6 +13,11 @@ export async function GET(request) {
   const chartUrl = new URL(url)
   const dataParam = chartUrl.searchParams.get('d')
 
+  // Create embed URL
+  const embedUrl = dataParam
+    ? `https://sportspie.site/embed?d=${encodeURIComponent(dataParam)}`
+    : 'https://sportspie.site'
+
   // Base oEmbed response
   const oembedResponse = {
     version: '1.0',
@@ -22,14 +27,14 @@ export async function GET(request) {
     title: dataParam ? 'My Sports Fandom Breakdown' : 'Sports Fandom Pie Chart',
     author_name: 'Sports Pie',
     author_url: 'https://sportspie.site',
-    width: 1200,
-    height: 630,
+    width: 800,
+    height: 600,
     thumbnail_url: dataParam
       ? `https://sportspie.site/api/og?d=${encodeURIComponent(dataParam)}`
       : 'https://sportspie.site/api/og',
     thumbnail_width: 1200,
     thumbnail_height: 630,
-    html: `<iframe src="${url}" width="1200" height="800" frameborder="0" allowfullscreen></iframe>`,
+    html: `<iframe src="${embedUrl}" width="800" height="600" frameborder="0" allowfullscreen style="border-radius: 8px;"></iframe>`,
   }
 
   if (format === 'xml') {
