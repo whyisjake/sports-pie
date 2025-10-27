@@ -4,8 +4,5 @@
   "description": "Sports Fandom Pie Chart",
   "scripts": {
     "dev": "vercel dev"
-  },
-  "dependencies": {
-    "@vercel/og": "^0.6.2"
   }
 }
