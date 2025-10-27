@@ -2,7 +2,8 @@ import SportsPieChart from './components/SportsPieChart'
 import './globals.css'
 
 export async function generateMetadata({ searchParams }) {
-  const dataParam = searchParams.d
+  const params = await searchParams
+  const dataParam = params.d
 
   if (dataParam) {
     return {
