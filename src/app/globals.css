@@ -371,12 +371,28 @@ h2 {
 
 .chart-section {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     background: #f9fafb;
     border-radius: 12px;
     padding: 30px;
     min-height: 500px;
+    overflow: hidden;
+    position: relative;
+}
+
+.chart-section > div {
+    width: 100%;
+    max-width: 600px;
+    max-height: 600px;
+    position: relative;
+}
+
+.chart-section canvas {
+    max-width: 100% !important;
+    max-height: 600px !important;
+    height: auto !important;
 }
 
 #fandomChart {

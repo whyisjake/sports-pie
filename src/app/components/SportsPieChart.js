@@ -375,7 +375,11 @@ export default function SportsPieChart() {
           </div>
 
           <div className="chart-section">
-            {chartConfig && chartOptions && <Pie ref={chartRef} data={chartConfig} options={chartOptions} />}
+            {chartConfig && chartOptions && (
+              <div style={{ width: '100%', maxWidth: '600px', position: 'relative' }}>
+                <Pie ref={chartRef} data={chartConfig} options={chartOptions} />
+              </div>
+            )}
             {chartData && (
               <div className="chart-actions" style={{ display: 'flex' }}>
                 <button onClick={shareChart} className="chart-action-btn">
