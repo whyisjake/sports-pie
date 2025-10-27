@@ -27,6 +27,7 @@ export default function SportsPieChart() {
   const [otherSports, setOtherSports] = useState([])
   const [chartData, setChartData] = useState(null)
   const [total, setTotal] = useState(0)
+  const [shouldAutoGenerate, setShouldAutoGenerate] = useState(false)
   const chartRef = useRef(null)
 
   // Load from URL on mount
@@ -38,10 +39,18 @@ export default function SportsPieChart() {
       if (loaded) {
         setSports(loaded.sports)
         setOtherSports(loaded.otherSports)
-        setTimeout(() => generateChart(), 100)
+        setShouldAutoGenerate(true)
       }
     }
   }, [])
+
+  // Auto-generate chart after state is loaded from URL
+  useEffect(() => {
+    if (shouldAutoGenerate && total > 0) {
+      generateChart()
+      setShouldAutoGenerate(false)
+    }
+  }, [shouldAutoGenerate, total])
 
   // Update total whenever sports change
   useEffect(() => {
