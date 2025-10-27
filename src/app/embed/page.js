@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Pie } from 'react-chartjs-2'
 import {
@@ -16,7 +16,7 @@ import '../globals.css'
 
 ChartJS.register(ArcElement, Tooltip, Legend, ChartTitle)
 
-export default function EmbedPage() {
+function EmbedChart() {
   const searchParams = useSearchParams()
   const [chartData, setChartData] = useState(null)
 
@@ -242,5 +242,26 @@ export default function EmbedPage() {
         <Pie data={chartConfig} options={chartOptions} plugins={[emojiPlugin]} />
       </div>
     </div>
+  )
+}
+
+export default function EmbedPage() {
+  return (
+    <Suspense fallback={
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '100vh',
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        color: 'white',
+        fontFamily: 'system-ui, sans-serif',
+        fontSize: '24px'
+      }}>
+        Loading chart...
+      </div>
+    }>
+      <EmbedChart />
+    </Suspense>
   )
 }
