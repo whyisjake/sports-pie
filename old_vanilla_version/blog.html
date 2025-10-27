@@ -1,0 +1,103 @@
+<!-- wp:heading -->
+<h2 class="wp-block-heading">Introducing Sports Pie: Visualize Your Sports Fandom</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>I'm excited to share a fun weekend project I built: <a href="https://sportspie.site">Sports Pie</a>, a web app that lets you create interactive pie charts to visualize your sports fandom breakdown.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:image {"align":"center","sizeSlug":"large"} -->
+<figure class="wp-block-image aligncenter size-large"><img src="https://sportspie.site/assets/images/sports-fandom-chart.png" alt="Sports Fandom Pie Chart Example"/></figure>
+<!-- /wp:image -->
+
+<!-- wp:heading {"level":3} -->
+<h3 class="wp-block-heading">The Inspiration</h3>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>The idea came from a <a href="https://www.tiktok.com/@__sportsball/video/7563289447702252855">TikTok video by @__sportsball</a> that Aaron Jorbin shared with our friend group. The concept was simple but compelling: breaking down your sports interests as percentages and then drilling down into specific teams. I thought it would be fun to build an interactive version where anyone could create and share their own charts.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"level":3} -->
+<h3 class="wp-block-heading">What It Does</h3>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>Sports Pie lets you:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:list -->
+<ul class="wp-block-list">
+<li>📊 Allocate percentages across the four major US sports (NFL, NBA, NHL, MLB)</li>
+<li>🏆 Break down your fandom by specific teams within each sport</li>
+<li>➕ Add custom sports beyond the big four</li>
+<li>🎨 Generate beautiful exploded pie charts with sport emoji overlays</li>
+<li>🔗 Share your chart via compact URLs</li>
+<li>💾 Download your chart as an image</li>
+</ul>
+<!-- /wp:list -->
+
+<!-- wp:paragraph -->
+<p>The app includes autocomplete for all 124 professional teams across the major leagues, making it quick to build your chart without having to type out full team names.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"level":3} -->
+<h3 class="wp-block-heading">Technical Highlights</h3>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>While the concept is straightforward, there were some interesting technical challenges:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"level":4} -->
+<h4 class="wp-block-heading">Compact URL Encoding (v1.1.0)</h4>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>The biggest challenge was URL length. Initially, I used a simple JSON-to-base64 approach for sharing charts, but this created URLs that were 700+ characters long and would break on social media platforms.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>The solution? A custom compact encoding system that maps all 124 known teams to short 2-5 character codes. For example:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:code -->
+<pre class="wp-block-code"><code>Before: ?data=JTdCJTIyc3BvcnRzJTIyJTNBJTdC... (~730 chars)
+After:  ?d=f:30:SF:50,SEA:30,GB:20|b:25:GSW:60,LAL:40 (~75 chars)</code></pre>
+<!-- /wp:code -->
+
+<!-- wp:paragraph -->
+<p>This <strong>90% reduction</strong> in URL length makes sharing on Twitter, Facebook, and other platforms much more reliable. The system still supports custom team names with a fallback encoding mechanism, and maintains backwards compatibility with the old format.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"level":4} -->
+<h4 class="wp-block-heading">Nested Exploded Pie Charts</h4>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>Creating the nested breakdown visualization required some Chart.js customization. Each sport gets its own color, and teams within that sport use brightness variations of the same color. Team segments "explode" more than their parent sport segments, creating a nice visual hierarchy. I also added a custom Chart.js plugin to overlay sport emojis on the segments using polar-to-cartesian coordinate conversion.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"level":4} -->
+<h4 class="wp-block-heading">Analytics (v1.1.1)</h4>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>I added Vercel Analytics to understand how people are using the app. It's privacy-friendly and adds minimal overhead with deferred script loading.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"level":3} -->
+<h3 class="wp-block-heading">Try It Out</h3>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>Head over to <a href="https://sportspie.site">sportspie.site</a> to create your own sports fandom chart. The whole thing is open source on <a href="https://github.com/whyisjake/sports-pie">GitHub</a>, so feel free to check out the code or contribute improvements.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>Special thanks to @__sportsball for the original idea and Aaron Jorbin for sharing it with our group!</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p><em>What's your sports fandom breakdown? Share your chart in the comments!</em></p>
+<!-- /wp:paragraph -->
