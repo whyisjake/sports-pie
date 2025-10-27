@@ -1,8 +1,19 @@
 {
   "name": "sports-pie",
   "version": "1.0.0",
-  "description": "Sports Fandom Pie Chart",
+  "private": true,
   "scripts": {
-    "dev": "vercel dev"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "next": "^15.1.4",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "chart.js": "^4.4.0",
+    "react-chartjs-2": "^5.2.0",
+    "@vercel/og": "^0.6.2"
   }
 }
