@@ -1,5 +1,3 @@
-import { ImageResponse } from '@vercel/og';
-
 export const config = {
   runtime: 'edge',
 };
@@ -101,6 +99,7 @@ function parseChartData(dataParam) {
 
 export default async function handler(req) {
   try {
+    const { ImageResponse } = await import('@vercel/og');
     const { searchParams } = new URL(req.url);
     const dataParam = searchParams.get('d');
 
