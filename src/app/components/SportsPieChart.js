@@ -274,6 +274,50 @@ export default function SportsPieChart() {
     alert(message)
   }
 
+  // Create emoji overlay plugin
+  const emojiPlugin = {
+    id: 'emojiOverlay',
+    afterDatasetsDraw(chart) {
+      if (!chartData) return
+
+      const { ctx, chartArea } = chart
+      const meta = chart.getDatasetMeta(0)
+      const centerX = (chartArea.left + chartArea.right) / 2
+      const centerY = (chartArea.top + chartArea.bottom) / 2
+
+      ctx.save()
+      ctx.font = 'bold 32px Arial'
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'middle'
+
+      meta.data.forEach((arc, index) => {
+        const emoji = chartData.emojis[index]
+        if (!emoji) return
+
+        // Calculate the angle for this segment
+        const startAngle = arc.startAngle
+        const endAngle = arc.endAngle
+        const midAngle = (startAngle + endAngle) / 2
+
+        // Calculate radius (middle of segment)
+        const radius = (arc.outerRadius + arc.innerRadius) / 2
+
+        // Adjust for offset (exploded segments)
+        const offset = chartData.offsets[index] || 0
+        const adjustedRadius = radius + (offset * 0.3)
+
+        // Convert to cartesian coordinates
+        const x = centerX + adjustedRadius * Math.cos(midAngle)
+        const y = centerY + adjustedRadius * Math.sin(midAngle)
+
+        // Draw emoji
+        ctx.fillText(emoji, x, y)
+      })
+
+      ctx.restore()
+    }
+  }
+
   const chartOptions = chartData ? {
     responsive: true,
     maintainAspectRatio: true,
@@ -304,7 +348,8 @@ export default function SportsPieChart() {
         backgroundColor: 'rgba(0, 0, 0, 0.8)',
         padding: 12,
         bodyFont: { size: 14 }
-      }
+      },
+      emojiOverlay: {}
     }
   } : null
 
@@ -386,7 +431,7 @@ export default function SportsPieChart() {
           <div className="chart-section">
             {chartConfig && chartOptions && (
               <div style={{ width: '100%', maxWidth: '600px', position: 'relative' }}>
-                <Pie ref={chartRef} data={chartConfig} options={chartOptions} />
+                <Pie ref={chartRef} data={chartConfig} options={chartOptions} plugins={[emojiPlugin]} />
               </div>
             )}
             {chartData && (
