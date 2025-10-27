@@ -209,9 +209,10 @@ function EmbedChart() {
     return (
       <div style={{
         display: 'flex',
-        alignItems: 'center',
+        alignItems: 'flex-start',
         justifyContent: 'center',
-        height: '100vh',
+        minHeight: '100vh',
+        padding: '40px',
         background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
         color: 'white',
         fontFamily: 'system-ui, sans-serif',
@@ -228,7 +229,7 @@ function EmbedChart() {
       background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
       minHeight: '100vh',
       display: 'flex',
-      alignItems: 'center',
+      alignItems: 'flex-start',
       justifyContent: 'center'
     }}>
       <div style={{
@@ -250,9 +251,10 @@ export default function EmbedPage() {
     <Suspense fallback={
       <div style={{
         display: 'flex',
-        alignItems: 'center',
+        alignItems: 'flex-start',
         justifyContent: 'center',
-        height: '100vh',
+        minHeight: '100vh',
+        padding: '40px',
         background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
         color: 'white',
         fontFamily: 'system-ui, sans-serif',
